@@ -4,7 +4,7 @@ namespace PhoneBookWithFile.Services
 {
     internal interface ILoggingService
     {
-        void LogInformation(string message) => 
-            Console.WriteLine(message);
+        void LogInfoLine(string message);
+        void LogInfo(string message);       
     }
 }
