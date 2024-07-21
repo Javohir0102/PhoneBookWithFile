@@ -7,9 +7,8 @@ namespace PhoneBookWithFile
     {
         static void Main(string[] args)
         {
-            IFileService fileService = new FileService();
-            //fileService.AddContact($"{name}, {phoneNumber}");
-            fileService.ReadAllContacts();            
+            MenuService menuService = new MenuService();
+            menuService.ShowMenuService();
         }
     }
 }

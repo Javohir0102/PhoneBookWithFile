@@ -6,5 +6,7 @@
         void SearchContact();
         void RemoveContact();
         void ReadAllContacts();
+        void UpdateContact();
+        void ClearAllContacts();
     }
 }
