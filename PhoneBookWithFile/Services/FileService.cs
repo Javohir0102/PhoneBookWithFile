@@ -22,6 +22,7 @@ namespace PhoneBookWithFile.Services
             string phoneNumber = Console.ReadLine();
             string contact = $"{name}, {phoneNumber}";
             File.AppendAllText(filePath, contact + Environment.NewLine);
+            log.LogInfoLine("Contact is successfully added\n");
         }
 
         public void RemoveContact()
@@ -40,6 +41,7 @@ namespace PhoneBookWithFile.Services
                 }
             }
             DeleteAndCreateFile(tempAllContacts);
+            log.LogInfoLine("Contact is successfully deleted\n");
         }
 
         private void DeleteAndCreateFile(string tempAllContacts)
@@ -53,7 +55,9 @@ namespace PhoneBookWithFile.Services
         {
             Console.Clear();
             string txt = File.ReadAllText(filePath);
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
             log.LogInfoLine(txt);
+            Console.ForegroundColor= ConsoleColor.White;
         }
 
         public void SearchContact()
@@ -107,12 +111,14 @@ namespace PhoneBookWithFile.Services
                     log.LogInfo("Enter the new name: ");
                     string newName = Console.ReadLine();
                     updatedContact = contacts.Replace(nameAndNumber[0], newName);
+                    log.LogInfoLine("Name is successfully edited\n");
                 }
                 else if (selection == 2)
                 {
                     log.LogInfo("Enter the new phone number: ");
                     string newPhoneNumber = Console.ReadLine();
                     updatedContact = contacts.Replace(nameAndNumber[1], newPhoneNumber);
+                    log.LogInfoLine("Phone number is successfully edited\n");
                 }
                 DeleteAndCreateFile(updatedContact);
 
@@ -124,7 +130,7 @@ namespace PhoneBookWithFile.Services
             Console.Clear();
             File.WriteAllText(filePath, "");
             Console.ForegroundColor = ConsoleColor.Red;
-            log.LogInfoLine("All contacts are cleared successfully");
+            log.LogInfoLine("All contacts are successfully cleared\n");
             Console.ForegroundColor = ConsoleColor.White;
         }
     }
