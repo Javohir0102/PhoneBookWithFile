@@ -2,8 +2,6 @@
 
 ## Welcome to contact app
 
-First result includes `ReadAllContact`, `SearchContact` and `AddContact` metods
-![](https://github.com/Javohir0102/PhoneBookWithFile/blob/master/PhoneBookWithFile/Asset%20gif/First%20result.gif)
+__Result with Json__
 
-Second result includes `RemoveContact`, `EditContact` and `ClearAllContact` metods
-![](https://github.com/Javohir0102/PhoneBookWithFile/blob/master/PhoneBookWithFile/Asset%20gif/Second%20result.gif)
+![](https://github.com/Javohir0102/PhoneBookWithFile/blob/master/PhoneBookWithFile/Asset%20gif/result%20with%20Json.gif)
