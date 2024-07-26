@@ -1,9 +1,10 @@
-﻿using System;
+﻿using PhoneBookWithFile.Model;
+using System;
 using System.IO;
 
 namespace PhoneBookWithFile.Services
 {
-    internal class FileService : IFileService
+    internal class FileService : IFileServiceV2
     {
         private const string filePath = "../../../phoneBook.txt";
         private ILoggingService log;
@@ -13,23 +14,18 @@ namespace PhoneBookWithFile.Services
             this.log = new LoggingService();
             EnsureFileExists();
         }
-        public void AddContact()
+        public void AddContact(Contact contact)
         {
             Console.Clear();
-            log.LogInfo("Enter the name: ");
-            string name = Console.ReadLine();
-            log.LogInfo("Enter the phone number: ");
-            string phoneNumber = Console.ReadLine();
-            string contact = $"{name}, {phoneNumber}";
-            File.AppendAllText(filePath, contact + Environment.NewLine);
-            log.LogInfoLine("Contact is successfully added\n");
+            string newContact = $"{contact.Name}, {contact.PhoneNumber}";
+            File.AppendAllText(filePath, newContact + Environment.NewLine);
+            log.LogInfoLine(" Contact is successfully added\n");
         }
 
-        public void RemoveContact()
+        public void RemoveContact(string name)
         {
             Console.Clear();
-            log.LogInfo("Enter the name: ");
-            string name = Console.ReadLine();
+
             string[] allContacts = File.ReadAllLines(filePath);
             string tempAllContacts = string.Empty;
             foreach (var item in allContacts)
@@ -41,7 +37,7 @@ namespace PhoneBookWithFile.Services
                 }
             }
             DeleteAndCreateFile(tempAllContacts);
-            log.LogInfoLine("Contact is successfully deleted\n");
+            log.LogInfoLine(" Contact is successfully deleted\n");
         }
 
         private void DeleteAndCreateFile(string tempAllContacts)
@@ -51,7 +47,7 @@ namespace PhoneBookWithFile.Services
             File.AppendAllText(filePath, tempAllContacts);
         }
 
-        public void ReadAllContacts()
+        public void ShowAllContacts()
         {
             Console.Clear();
             string txt = File.ReadAllText(filePath);
@@ -60,18 +56,16 @@ namespace PhoneBookWithFile.Services
             Console.ForegroundColor= ConsoleColor.White;
         }
 
-        public void SearchContact()
+        public void SearchContact(string name)
         {
             Console.Clear();
             SelectedContact = string.Empty;
-            log.LogInfo("Search contact name: ");
-            string searchName = Console.ReadLine();
             string[] allContacts = File.ReadAllLines(filePath);
 
             foreach (var contact in allContacts)
             {
                 string splitName = contact.Split(",")[0];
-                if (splitName.ToUpper().Equals(searchName.ToUpper()))
+                if (splitName.ToUpper().Equals(name.ToUpper()))
                 {
                     log.LogInfoLine(contact);
                     SelectedContact = contact;
@@ -80,7 +74,7 @@ namespace PhoneBookWithFile.Services
             if (SelectedContact == "")
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                log.LogInfoLine("Contact is not found! try again.");
+                log.LogInfoLine(" Contact is not found! try again.");
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
@@ -94,13 +88,13 @@ namespace PhoneBookWithFile.Services
             }
         }
 
-        public void UpdateContact()
+        public void UpdateContact(string name)
         {
             Console.Clear();
-            SearchContact();
+            SearchContact(name);
             if (!SelectedContact.Equals(""))
             {
-                log.LogInfoLine("1. change name\n2. change number");
+                log.LogInfoLine(" 1. change name\n 2. change number");
                 int selection = int.Parse(Console.ReadLine());
                 string contacts = File.ReadAllText(filePath);
                 string[] nameAndNumber = SelectedContact.Split(",");
@@ -108,29 +102,29 @@ namespace PhoneBookWithFile.Services
 
                 if (selection == 1)
                 {
-                    log.LogInfo("Enter the new name: ");
+                    log.LogInfo(" Enter the new name: ");
                     string newName = Console.ReadLine();
                     updatedContact = contacts.Replace(nameAndNumber[0], newName);
-                    log.LogInfoLine("Name is successfully edited\n");
+                    log.LogInfoLine(" Name is successfully edited\n");
                 }
                 else if (selection == 2)
                 {
-                    log.LogInfo("Enter the new phone number: ");
+                    log.LogInfo(" Enter the new phone number: ");
                     string newPhoneNumber = Console.ReadLine();
                     updatedContact = contacts.Replace(nameAndNumber[1], newPhoneNumber);
-                    log.LogInfoLine("Phone number is successfully edited\n");
+                    log.LogInfoLine(" Phone number is successfully edited\n");
                 }
                 DeleteAndCreateFile(updatedContact);
 
             }
         }
 
-        public void ClearAllContacts()
+        public void DeleteAllContact()
         {
             Console.Clear();
             File.WriteAllText(filePath, "");
             Console.ForegroundColor = ConsoleColor.Red;
-            log.LogInfoLine("All contacts are successfully cleared\n");
+            log.LogInfoLine(" All contacts are successfully cleared\n");
             Console.ForegroundColor = ConsoleColor.White;
         }
     }

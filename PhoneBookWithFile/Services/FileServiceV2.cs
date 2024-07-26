@@ -2,9 +2,7 @@
 using PhoneBookWithFile.Model;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Net.Http.Headers;
 
 namespace PhoneBookWithFile.Services
 {
@@ -21,6 +19,7 @@ namespace PhoneBookWithFile.Services
 
         public void AddContact(Contact contact)
         {
+            Console.Clear();
             List<Contact> user = null;
             AllContacts allContactList = GetContactsFromJson();
             if (allContactList is null)
@@ -41,6 +40,7 @@ namespace PhoneBookWithFile.Services
 
         private static AllContacts GetContactsFromJson()
         {
+            Console.Clear();
             string jsonFile = File.ReadAllText(filePath);
             var result = JsonConvert.DeserializeObject<AllContacts>(jsonFile);
             return result;
@@ -48,11 +48,12 @@ namespace PhoneBookWithFile.Services
 
         public void RemoveContact(string name)
         {
-            List<Contact> user = null;
+            Console.Clear();
+            
             AllContacts allContactList = GetContactsFromJson();
             if (allContactList is null)
             {
-                Console.WriteLine("Contact is not found");
+                Console.WriteLine(" Contact is not found");
             }
             else
             {
@@ -72,6 +73,7 @@ namespace PhoneBookWithFile.Services
 
         public void SearchContact(string name)
         {
+            Console.Clear();
             SelectedContact = null;
             string[] allContacts = File.ReadAllLines(filePath);
             var contactList = GetContactsFromJson();
@@ -81,8 +83,12 @@ namespace PhoneBookWithFile.Services
                 if (name.ToUpper() == item.Name.ToUpper())
                 {
                     SelectedContact = item;
-                    Console.WriteLine($"Name: {item.Name}, Phone number: {item.PhoneNumber}");
+                    Console.WriteLine($" Name: {item.Name}, Phone number: {item.PhoneNumber}");
                     break;
+                }
+                else
+                {
+                    Console.WriteLine($" {name} is not found");
                 }
             }
         }
@@ -94,13 +100,13 @@ namespace PhoneBookWithFile.Services
 
             if (contactList is null)
             {
-                Console.WriteLine("Contact is not found.");
+                Console.WriteLine(" Contact is not found.");
                 return;
             }
             Console.ForegroundColor = ConsoleColor.DarkMagenta;
             foreach (Contact item in contactList.Contacts)
             {
-                Console.WriteLine($"Name: {item.Name}, Phone number: {item.PhoneNumber}");
+                Console.WriteLine($" Name: {item.Name}, Phone number: {item.PhoneNumber}");
             }
             Console.ForegroundColor = ConsoleColor.White;
         }
@@ -123,8 +129,9 @@ namespace PhoneBookWithFile.Services
 
         public void UpdateContact(string name)
         {
+            Console.Clear();
             SearchContact(name); 
-            Console.WriteLine("1. change name\n2. change number");
+            Console.WriteLine(" 1. change name\n 2. change number");
             int selection = int.Parse(Console.ReadLine());
 
             var allContactList = GetContactsFromJson();
@@ -164,7 +171,7 @@ namespace PhoneBookWithFile.Services
         public void DeleteAllContact()
         {
             File.WriteAllText(filePath, "");
-            Console.WriteLine("All contact is deleted!");
+            Console.WriteLine(" All contact is deleted!");
         }
     }
 }
