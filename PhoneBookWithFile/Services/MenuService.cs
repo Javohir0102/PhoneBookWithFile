@@ -1,4 +1,5 @@
 ﻿using PhoneBookWithFile.Model;
+using Spectre.Console;
 using System;
 
 namespace PhoneBookWithFile.Services
@@ -10,112 +11,126 @@ namespace PhoneBookWithFile.Services
         Contact contact = new Contact();
         ILoggingService log = new LoggingService();
 
+
+
         public void ShowMenuService()
         {
-            log.LogInfoLine(" Welcome to the Contact app");
-            log.LogInfo(" Choose file type: 1 - Json | 2 - Txt\n Your choice: ");
-            string fileType = Console.ReadLine();
+            AnsiConsole.MarkupLine(" [red]Welcome to the[/] [orange1]Contact app[/]");
 
-            if (fileType == "1")
+            var fileType = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title(" Choose [green]file type:[/]")
+                    .PageSize(5)
+                    .AddChoices(new[] {
+            "Json file", "Txt file",
+                    }));
+
+            switch (fileType)
             {
-                fileServiceV2 = new FileServiceV2();
-            }
-            else if (fileType == "2") 
-            {
-                fileServiceV2 = new FileService();
+                case "Json file":
+                    {
+                        fileServiceV2 = new FileServiceV2();
+                        break;
+                    }
+                case "Txt file":
+                    {
+                        fileServiceV2 = new FileService();
+                        break;
+                    }
+                default:
+                    {
+                        AnsiConsole.MarkupLine(" [green]Invalid choice![/]");
+                        break;
+                    }
             }
 
             string selction;
             do
             {
                 Console.Clear();
-                log.LogInfoLine(" 1. Read all contact");
-                log.LogInfoLine(" 2. Search contact");
-                log.LogInfoLine(" 3. Add contact");
-                log.LogInfoLine(" 4. Remove contact");
-                log.LogInfoLine(" 5. Edit contact");
-                log.LogInfoLine(" 6. Clear all contacts\n");
+                AnsiConsole.MarkupLine($" You are in [bold blue]{fileType}[/]!");
 
-                log.LogInfo(" Enter your choice: ");
                 try
                 {
-                    int yourChoice = int.Parse(Console.ReadLine());
-                    switch (yourChoice)
+                    // Ask for the user's favorite fruit
+                    var menuChoice = AnsiConsole.Prompt(
+                        new SelectionPrompt<string>()
+                            .Title(" Select your [green]choice[/]?")
+                            .PageSize(10)
+                            .MoreChoicesText("[grey](Move up and down to reveal more services)[/]")
+                            .AddChoices(new[] {
+            "Read all contacts", "Search contact", "Add contact",
+            "Remove contact", "Edit contact", "Clear all contacts"
+                            }));
+
+                    // Echo the fruit back to the terminal
+                    AnsiConsole.WriteLine($" Your choice: {menuChoice}");
+                    switch (menuChoice)
                     {
-                        case 1:
+                        case "Read all contacts":
                             fileServiceV2.ShowAllContacts();
                             break;
-                        case 2:
+                        case "Search contact":
                             {
-                                log.LogInfo(" ism kiriting: ");
+                                AnsiConsole.Markup(" [salmon1]ism kiriting:[/] ");
                                 string name = Console.ReadLine();
 
                                 fileServiceV2.SearchContact(name);
                                 break;
                             }
-                        case 3:
+                        case "Add contact":
                             {
-                                log.LogInfo(" ism kiriting: ");
+                                AnsiConsole.Markup(" [salmon1]ism kiriting:[/] ");
                                 contact.Name = Console.ReadLine();
-                                log.LogInfo(" raqam kiriting: ");
+                                AnsiConsole.Markup(" [salmon1]raqam kiriting:[/] ");
                                 contact.PhoneNumber = Console.ReadLine();
 
                                 fileServiceV2.AddContact(contact);
                                 break;
                             }
-                        case 4:
+                        case "Remove contact":
                             {
-                                log.LogInfo(" ism kiriting: ");
+                                AnsiConsole.Markup(" [maroon]ism kiriting:[/] ");
                                 string name = Console.ReadLine();
 
                                 fileServiceV2.RemoveContact(name);
                                 break;
                             }
-                        case 5:
+                        case "Edit contact":
                             {
-                                log.LogInfo(" ism kiriting: ");
+                                AnsiConsole.Markup(" [maroon]ism kiriting:[/] ");
                                 string name = Console.ReadLine();
 
                                 fileServiceV2.UpdateContact(name);
                                 break;
                             }
-                        case 6:
+                        case "Clear all contacts":
                             {
                                 fileServiceV2.DeleteAllContact();
                                 break;
                             }
                         default:
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            log.LogInfoLine(" Enter the correct choice! on the menu\n Your Choice: ");
-                            Console.ForegroundColor = ConsoleColor.White;
+                            AnsiConsole.MarkupLine(" [red]Enter the correct choice! on the menu\n Your Choice:[/] ");
                             break;
                     }
-                }
-                catch (FormatException)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    log.LogInfoLine(" Wrong!!! please enter only number(between 1 and 5)");
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                catch (OverflowException)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    log.LogInfoLine(" Wrong!!! please enter 1, 2, 3, 4 or 5");
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
+                }                
                 catch (Exception)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    log.LogInfoLine
-                        (" If you make the right choice, " +
-                        "and if the program is working incorrectly, " +
-                        "please contact us");
+                    AnsiConsole.MarkupLine
+                        (" [bold yellow]If you make the right choice, " +
+                        "and the program is working incorrectly, " +
+                        "please contact us[/]");
                     Console.ForegroundColor = ConsoleColor.White;
                 }
 
-                log.LogInfo(" Do you want using again?\n please press (yes) or (y): ");
-                selction = Console.ReadLine().ToLower();
-            } while (selction is "yes" or "y");
+                AnsiConsole.MarkupLine(" [red]Do you want using again?[/]");
+
+                selction = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .PageSize(5)
+                        .AddChoices(new[] { "Yes", "No", }));
+            } while (selction is "Yes");
         }
     }
 }
