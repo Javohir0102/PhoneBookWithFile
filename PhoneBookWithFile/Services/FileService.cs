@@ -1,4 +1,5 @@
 ﻿using PhoneBookWithFile.Model;
+using Spectre.Console;
 using System;
 using System.IO;
 
@@ -19,7 +20,7 @@ namespace PhoneBookWithFile.Services
             Console.Clear();
             string newContact = $"{contact.Name}, {contact.PhoneNumber}";
             File.AppendAllText(filePath, newContact + Environment.NewLine);
-            log.LogInfoLine(" Contact is successfully added\n");
+            AnsiConsole.MarkupLine(" [red]Contact is successfully added\n[/]");
         }
 
         public void RemoveContact(string name)
@@ -37,7 +38,7 @@ namespace PhoneBookWithFile.Services
                 }
             }
             DeleteAndCreateFile(tempAllContacts);
-            log.LogInfoLine(" Contact is successfully deleted\n");
+            AnsiConsole.MarkupLine(" [red]Contact is successfully deleted\n[/]");
         }
 
         private void DeleteAndCreateFile(string tempAllContacts)
@@ -51,9 +52,7 @@ namespace PhoneBookWithFile.Services
         {
             Console.Clear();
             string txt = File.ReadAllText(filePath);
-            Console.ForegroundColor = ConsoleColor.DarkCyan;
-            log.LogInfoLine(txt);
-            Console.ForegroundColor= ConsoleColor.White;
+            AnsiConsole.MarkupLine($" [bold yellow]{txt}[/]");
         }
 
         public void SearchContact(string name)
@@ -67,15 +66,13 @@ namespace PhoneBookWithFile.Services
                 string splitName = contact.Split(",")[0];
                 if (splitName.ToUpper().Equals(name.ToUpper()))
                 {
-                    log.LogInfoLine(contact);
+                    AnsiConsole.MarkupLine($" [bold maroon]{contact}[/]");
                     SelectedContact = contact;
                 }
             }
             if (SelectedContact == "")
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                log.LogInfoLine(" Contact is not found! try again.");
-                Console.ForegroundColor = ConsoleColor.White;
+                AnsiConsole.MarkupLine(" [bold red]Contact is not found! try again.[/]");
             }
         }
 
@@ -94,7 +91,7 @@ namespace PhoneBookWithFile.Services
             SearchContact(name);
             if (!SelectedContact.Equals(""))
             {
-                log.LogInfoLine(" 1. change name\n 2. change number");
+                AnsiConsole.Markup(" [yellow]1. change name\n 2. change number\n your choice: [/]");
                 int selection = int.Parse(Console.ReadLine());
                 string contacts = File.ReadAllText(filePath);
                 string[] nameAndNumber = SelectedContact.Split(",");
@@ -102,20 +99,19 @@ namespace PhoneBookWithFile.Services
 
                 if (selection == 1)
                 {
-                    log.LogInfo(" Enter the new name: ");
+                    AnsiConsole.Markup(" [teal]Enter the new name:[/] ");
                     string newName = Console.ReadLine();
                     updatedContact = contacts.Replace(nameAndNumber[0], newName);
-                    log.LogInfoLine(" Name is successfully edited\n");
+                    AnsiConsole.MarkupLine(" [bold red]Name is successfully edited\n[/]");
                 }
                 else if (selection == 2)
                 {
-                    log.LogInfo(" Enter the new phone number: ");
+                    AnsiConsole.Markup(" [teal]Enter the new phone number:[/] ");
                     string newPhoneNumber = Console.ReadLine();
                     updatedContact = contacts.Replace(nameAndNumber[1], newPhoneNumber);
-                    log.LogInfoLine(" Phone number is successfully edited\n");
+                    AnsiConsole.MarkupLine(" [bold red]Phone number is successfully edited\n[/]");
                 }
                 DeleteAndCreateFile(updatedContact);
-
             }
         }
 
@@ -123,9 +119,7 @@ namespace PhoneBookWithFile.Services
         {
             Console.Clear();
             File.WriteAllText(filePath, "");
-            Console.ForegroundColor = ConsoleColor.Red;
-            log.LogInfoLine(" All contacts are successfully cleared\n");
-            Console.ForegroundColor = ConsoleColor.White;
+            AnsiConsole.MarkupLine(" [bold olive]All contacts are successfully cleared\n[/]");
         }
     }
 }
