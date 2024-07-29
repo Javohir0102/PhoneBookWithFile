@@ -11,8 +11,6 @@ namespace PhoneBookWithFile.Services
         Contact contact = new Contact();
         ILoggingService log = new LoggingService();
 
-
-
         public void ShowMenuService()
         {
             AnsiConsole.MarkupLine(" [red]Welcome to the[/] [orange1]Contact app[/]");
@@ -52,7 +50,6 @@ namespace PhoneBookWithFile.Services
 
                 try
                 {
-                    // Ask for the user's favorite fruit
                     var menuChoice = AnsiConsole.Prompt(
                         new SelectionPrompt<string>()
                             .Title(" Select your [green]choice[/]?")
@@ -63,7 +60,6 @@ namespace PhoneBookWithFile.Services
             "Remove contact", "Edit contact", "Clear all contacts"
                             }));
 
-                    // Echo the fruit back to the terminal
                     AnsiConsole.WriteLine($" Your choice: {menuChoice}");
                     switch (menuChoice)
                     {
