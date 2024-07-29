@@ -12,8 +12,13 @@ namespace PhoneBookWithFile.Services
         private const string filePath = "../../../phoneBook.json";
         private ILoggingService log;
         private Contact SelectedContact;
+        private Table table; 
         public FileServiceV2()
         {
+            table = new Table();
+            table.AddColumn("#");
+            table.AddColumn("Name");
+            table.AddColumn("Phone number");
             this.log = new LoggingService();
             EnsureFileExist();
         }
@@ -84,9 +89,11 @@ namespace PhoneBookWithFile.Services
                 if (name.ToUpper() == item.Name.ToUpper())
                 {
                     SelectedContact = item;
-                    AnsiConsole.MarkupLine($" Name: [bold cornflowerblue]{item.Name}[/], Phone number: [bold cornflowerblue]{item.PhoneNumber}[/]");
+                    table.AddRow("1", item.Name, item.PhoneNumber);
+                    //AnsiConsole.MarkupLine($" Name: [bold cornflowerblue]{item.Name}[/], Phone number: [bold cornflowerblue]{item.PhoneNumber}[/]");
                     break;
                 }
+                AnsiConsole.Write(table);
             }
             if (SelectedContact is null)
             {
@@ -98,7 +105,7 @@ namespace PhoneBookWithFile.Services
         {
             Console.Clear();
             var contactList = GetContactsFromJson();
-
+            int id = 0;
             if (contactList is null)
             {
                 AnsiConsole.MarkupLine(" [red]Contact is not found.[/]");
@@ -106,8 +113,10 @@ namespace PhoneBookWithFile.Services
             }
             foreach (Contact item in contactList.Contacts)
             {
-                AnsiConsole.MarkupLine($" Name: [bold aqua]{item.Name}[/], Phone number: [bold aqua]{item.PhoneNumber}[/]");
+                table.AddRow((++id).ToString(), item.Name, item.PhoneNumber);
+                //AnsiConsole.MarkupLine($" Name: [bold aqua]{item.Name}[/], Phone number: [bold aqua]{item.PhoneNumber}[/]");
             }
+            AnsiConsole.Write(table);
         }
 
         private static void EnsureFileExist()

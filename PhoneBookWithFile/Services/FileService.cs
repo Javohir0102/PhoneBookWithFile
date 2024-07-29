@@ -2,6 +2,7 @@
 using Spectre.Console;
 using System;
 using System.IO;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PhoneBookWithFile.Services
 {
@@ -10,8 +11,13 @@ namespace PhoneBookWithFile.Services
         private const string filePath = "../../../phoneBook.txt";
         private ILoggingService log;
         private string SelectedContact;
+        private Table table;
         public FileService()
         {
+            table = new Table();
+            table.AddColumn("#");
+            table.AddColumn("Name");
+            table.AddColumn("Phone number");
             this.log = new LoggingService();
             EnsureFileExists();
         }
@@ -51,8 +57,19 @@ namespace PhoneBookWithFile.Services
         public void ShowAllContacts()
         {
             Console.Clear();
+            int id = 1;           
             string txt = File.ReadAllText(filePath);
-            AnsiConsole.MarkupLine($" [bold yellow]{txt}[/]");
+            string[] entries = txt.Split(Environment.NewLine);
+            foreach (var item in entries)
+            {
+                string[] strings = item.Split(",");
+                if (strings.Length == 2)
+                {
+                    table.AddRow((id++).ToString(), strings[0], strings[1]);
+                }
+            }
+            AnsiConsole.Write(table);
+           // AnsiConsole.MarkupLine($" [bold yellow]{txt}[/]");
         }
 
         public void SearchContact(string name)
@@ -66,9 +83,11 @@ namespace PhoneBookWithFile.Services
                 string splitName = contact.Split(",")[0];
                 if (splitName.ToUpper().Equals(name.ToUpper()))
                 {
-                    AnsiConsole.MarkupLine($" [bold maroon]{contact}[/]");
+                    table.AddRow("1", contact.Split(",")[0], contact.Split(",")[1]);
+                    //AnsiConsole.MarkupLine($" [bold maroon]{contact}[/]");
                     SelectedContact = contact;
                 }
+                AnsiConsole.Write(table);
             }
             if (SelectedContact == "")
             {
