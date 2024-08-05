@@ -83,7 +83,11 @@ namespace PhoneBookWithFile.Services
             SelectedContact = null;
             string[] allContacts = File.ReadAllLines(filePath);
             var contactList = GetContactsFromJson();
-
+            if (contactList is null)
+            {
+                AnsiConsole.MarkupLine(" [red]Contact is not found.[/]");
+                return;
+            }
             foreach (var item in contactList.Contacts)
             {
                 if (name.ToUpper() == item.Name.ToUpper())
